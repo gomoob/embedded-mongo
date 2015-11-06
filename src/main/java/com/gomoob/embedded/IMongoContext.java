@@ -6,6 +6,8 @@
  */
 package com.gomoob.embedded;
 
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
@@ -30,6 +32,34 @@ public interface IMongoContext {
 	 * @return the embedded Mongo DB configuration in use.
 	 */
 	public IMongodConfig getMongodConfig();
+	
+	/**
+	 * Gets a reference to the Mongo DB executable currently in execution. 
+	 * 
+	 * @return a reference to the Mongo DB executablt currently in execution.
+	 */
+	public MongodExecutable getMongodExecutable();
+	
+	/**
+	 * Gets a reference to the Mongo DB process.
+	 * 
+	 * @return a reference to the Mongo DB process.
+	 */
+	public MongodProcess getMongodProcess();
+	
+	/**
+	 * Sets a reference to the Mongo DB executable currently in execution.
+	 * 
+	 * @param mongodExecutable A reference to the Mongo DB executable currently in execution.
+	 */
+	void setMongodExecutable(MongodExecutable mongodExecutable);
+	
+	/**
+	 * Sets a reference to the Mongo DB process.
+	 * 
+	 * @param mongodProcess A reference to the Mongo DB process.
+	 */
+	void setMongodProcess(MongodProcess mongodProcess);
 
 	/**
 	 * Gets the runtime configuration in use.

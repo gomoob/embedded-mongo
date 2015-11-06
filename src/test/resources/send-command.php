@@ -6,7 +6,7 @@ $port = 4309;
 $socket = socket_create(AF_INET, SOCK_STREAM, getprotobyname('tcp'));
 socket_connect($socket, $address, $port);
 
-$message = '{"command" : "stop"}' . PHP_EOL;
+$message = '{"command" : "' . $argv[1] . '"}' . PHP_EOL;
 $len = strlen($message);
 
 $status = socket_sendto($socket, $message, $len, 0, $address, $port);

@@ -20,12 +20,11 @@ import org.apache.commons.cli.Options;
 import org.json.JSONObject;
 
 import com.gomoob.embedded.command.GetConfigurationCommand;
+import com.gomoob.embedded.command.GetStateCommand;
+import com.gomoob.embedded.command.StartCommand;
 import com.gomoob.embedded.command.StopCommand;
+import com.gomoob.embedded.command.TerminateCommand;
 import com.gomoob.embedded.context.Context;
-
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
 
 /**
  * Main class of the embedded Mongo DB server.
@@ -34,9 +33,10 @@ import de.flapdoodle.embed.mongo.MongodStarter;
  */
 public class EmbeddedMongo {
 
+	/**
+	 * A map of the commands supported by the embedded Mongo DB server.
+	 */
 	private static Map<String, ICommand> commands = new HashMap<String, ICommand>();
-
-	private static MongodExecutable mongodExecutable = null;
 
 	/**
 	 * An object which describes the while execution context and configuration.
@@ -46,19 +46,20 @@ public class EmbeddedMongo {
 	static {
 
 		commands.put("get-configuration", new GetConfigurationCommand());
+		commands.put("get-state", new GetStateCommand());
+		commands.put("start", new StartCommand());
 		commands.put("stop", new StopCommand());
+		commands.put("terminate", new TerminateCommand());
 
 	}
 
-	private static void startMongo() throws Exception {
-
-		MongodStarter starter = MongodStarter.getInstance(context.getMongoContext().getRuntimeConfig());
-
-		mongodExecutable = starter.prepare(context.getMongoContext().getMongodConfig());
-		MongodProcess mongod = mongodExecutable.start();
-
-	}
-	
+	/**
+	 * Function used to parse the command line.
+	 * 
+	 * @param args Arguments passed at command line.
+	 * 
+	 * @throws Exception
+	 */
 	private static void parseCommandLine(String[] args) throws Exception {
 		
 		CommandLineParser parser = new DefaultParser();
@@ -70,9 +71,9 @@ public class EmbeddedMongo {
 
 		CommandLine commandLine = parser.parse(options, args);
 
-		// Read he mongo port
+		// Read the mongo port
 		if (commandLine.hasOption("mongo-port")) {
-			
+
 			context.getMongoContext().setPort(Integer.parseInt(commandLine.getOptionValue("mongo-port")));
 
 		}
@@ -102,16 +103,13 @@ public class EmbeddedMongo {
 		// Parse the command line
 		parseCommandLine(args);
 
-		boolean stop = false;
+		boolean terminated = false;
 
 		System.out.println("MONGOD_HOST=" + context.getMongoContext().getNet().getServerAddress().getHostName());
 		System.out.println("MONGOD_PORT=" + context.getMongoContext().getNet().getPort());
 		System.out.println("SERVER_SOCKET_PORT=" + context.getSocketContext().getServerSocket().getLocalPort());
 
-		// Starts the Mongo server
-		startMongo();
-		
-		while (!stop) {
+		while (!terminated) {
 
 			Socket socket = context.getSocketContext().getServerSocket().accept();
 
@@ -125,7 +123,7 @@ public class EmbeddedMongo {
 
 			ICommand command = parseCommandString(commandString);
 
-			IResponse response = command.run(new Context());
+			IResponse response = command.run(context);
 
 			// Sends a representation of the response
 			outputStream.writeBytes(response.toJSON());
@@ -137,7 +135,7 @@ public class EmbeddedMongo {
 			}
 
 			// If stop is required
-			stop = response.isStopRequired();
+			terminated = response.isTerminationRequired();
 
 		}
 
@@ -148,9 +146,7 @@ public class EmbeddedMongo {
 	 * Utility function used to get a command from a command string (i.e a JSON
 	 * string which completely describe a command).
 	 * 
-	 * @param commandString
-	 *            A json string which completely describe a command to be
-	 *            executed.
+	 * @param commandString A json string which completely describe a command to be executed.
 	 * 
 	 * @return The command to execute.
 	 */
@@ -163,10 +159,6 @@ public class EmbeddedMongo {
 		System.out.println("Command : " + commandName);
 
 		command = commands.get(commandName);
-
-		// Sets several context objects which could be used by the command
-		// during run
-		command.setMongodExecutable(mongodExecutable);
 
 		// Sets the command parameters
 		if (commandJsonObject.has("parameters")) {

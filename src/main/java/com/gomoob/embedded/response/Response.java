@@ -26,10 +26,9 @@ public class Response implements IResponse {
 	protected Map<String, Object> parameters = new HashMap<String, Object>();
 	
 	/**
-	 * Indicate if the embedded Mongo DB server should be stopped after the
-	 * response is returned.
+	 * Indicate if the wrapping server should be terminated after the response is returned.
 	 */
-	protected boolean stopRequired = false;
+	protected boolean terminationRequired = false;
 	
 	/**
 	 * {@inheritDoc}
@@ -48,15 +47,15 @@ public class Response implements IResponse {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean isStopRequired() {
-		return this.stopRequired;
+	public boolean isTerminationRequired() {
+		return this.terminationRequired;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setStopRequired(boolean stopRequired) {
-		this.stopRequired = stopRequired;
+	public void setTerminationRequired(boolean stopRequired) {
+		this.terminationRequired = stopRequired;
 	}
 
 	/**
@@ -65,8 +64,12 @@ public class Response implements IResponse {
 	public String toJSON() {
 		
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("stopRequired", this.stopRequired);
+
+		for(String parameter : this.parameters.keySet()) {
 		
+			jsonObject.put(parameter, this.parameters.get(parameter));
+		
+		}
 		return jsonObject.toString();
 
 	}

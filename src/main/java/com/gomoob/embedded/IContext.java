@@ -26,5 +26,18 @@ public interface IContext {
 	 * @return the socket context.
 	 */
 	public ISocketContext getSocketContext();
+	
+	/**
+	 * Gets the current server state.
+	 * 
+	 * @return the current server state.
+	 */
+	public State getState();
 
+	/**
+	 * Sets the current server state.
+	 * 
+	 * @param state The current server state.
+	 */
+	public void setState(State state);
 }

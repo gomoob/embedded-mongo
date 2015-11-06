@@ -12,20 +12,25 @@ import com.gomoob.embedded.IResponse;
 import com.gomoob.embedded.response.Response;
 
 /**
- * Command used to gets the server configuration.
+ * Command used to get the server state.
  * 
  * @author Baptiste GAILLARD (baptiste.gaillard@gomoob.com)
  */
-public class GetConfigurationCommand extends AbstractCommand {
+public class GetStateCommand extends AbstractCommand {
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public IResponse run(IContext context) throws CommandException
-	{
+	public IResponse run(IContext context) throws CommandException {
+
 		// Creates the response
 		IResponse response = new Response();
+		response.setTerminationRequired(false);
+
+		response.addParameter("state", context.getState());
 
 		return response;
+
 	}
+
 }

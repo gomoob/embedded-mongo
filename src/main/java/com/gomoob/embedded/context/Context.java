@@ -10,6 +10,7 @@ import com.gomoob.embedded.ContextException;
 import com.gomoob.embedded.IContext;
 import com.gomoob.embedded.IMongoContext;
 import com.gomoob.embedded.ISocketContext;
+import com.gomoob.embedded.State;
 
 /**
  * Class which describes a command execution context.
@@ -28,6 +29,11 @@ public class Context implements IContext {
 	 */
 	private ISocketContext socketContext = null;
 
+	/**
+	 * The current server status.
+	 */
+	private State status = State.NEVER_STARTED;
+	
 	/**
 	 * Creates a new execution context.
 	 * 
@@ -51,5 +57,19 @@ public class Context implements IContext {
 	 */
 	public ISocketContext getSocketContext() {
 		return this.socketContext;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public State getState() {
+		return this.status;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setState(State status) {
+		this.status = status;
 	}
 }

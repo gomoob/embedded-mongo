@@ -13,6 +13,8 @@ import com.gomoob.embedded.ContextException;
 import com.gomoob.embedded.IMongoContext;
 
 import de.flapdoodle.embed.mongo.Command;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.config.DownloadConfigBuilder;
 import de.flapdoodle.embed.mongo.config.ExtractedArtifactStoreBuilder;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
@@ -41,6 +43,16 @@ public class MongoContext implements IMongoContext {
 	 * The runtime configuration is use.
 	 */
 	protected IRuntimeConfig runtimeConfig = null;
+	
+	/**
+	 * A reference to the Mongo DB executable currently in execution. 
+	 */
+	protected MongodExecutable mongodExecutable = null;
+	
+	/**
+	 * A reference to the Mongo DB process.
+	 */
+	protected MongodProcess mongodProcess = null;
 
 	/**
 	 * The network configuration is use.
@@ -112,14 +124,44 @@ public class MongoContext implements IMongoContext {
 	public IMongodConfig getMongodConfig() {
 		return this.mongodConfig;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MongodExecutable getMongodExecutable() {
+		return this.mongodExecutable;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public MongodProcess getMongodProcess() {
+		return this.mongodProcess;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public IRuntimeConfig getRuntimeConfig() {
 		return this.runtimeConfig;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setMongodExecutable(MongodExecutable mongodExecutable)
+	{
+		this.mongodExecutable = mongodExecutable;
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setMongodProcess(MongodProcess mongodProcess)
+	{
+		this.mongodProcess = mongodProcess;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

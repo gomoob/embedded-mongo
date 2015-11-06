@@ -31,19 +31,19 @@ public interface IResponse {
     public Map<String, Object> getParameters();
 	
 	/**
-	 * Function used to indicate if the embedded Mongo DB server should be stopped after the response is returned.
+	 * Function used to indicate if the wrapping server should be terminated after the response is returned.
 	 * 
-	 * @return <code>true</code> if the embedded Mongo DB server should be stopped after the response is returned, 
+	 * @return <code>true</code> if the wrapping server should be stopped after the response is returned, 
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean isStopRequired();
+	public boolean isTerminationRequired();
 	
 	/**
-	 * Sets if the embedded Mongo DB server should be stopped after the response is returned.
+	 * Sets if the wrapping server should be stopped after the response is returned.
 	 * 
-	 * @param stopRequired <code>true</code> to require stop, <code>false</code> otherwise.
+	 * @param terminationRequired <code>true</code> to require stop, <code>false</code> otherwise.
 	 */
-	public void setStopRequired(boolean stopRequired);
+	public void setTerminationRequired(boolean terminationRequired);
 	
 	/**
 	 * Returns a JSON representation of the response.

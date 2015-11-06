@@ -11,8 +11,6 @@ import java.util.Map;
 
 import com.gomoob.embedded.ICommand;
 
-import de.flapdoodle.embed.mongo.MongodExecutable;
-
 /**
  * Abstract class common to all socket commands.
  * 
@@ -20,11 +18,6 @@ import de.flapdoodle.embed.mongo.MongodExecutable;
  */
 public abstract class AbstractCommand implements ICommand {
 
-	/**
-	 * A reference to the Mongo DB executable currently in execution. 
-	 */
-	protected MongodExecutable mongodExecutable = null;
-	
 	/**
 	 * The name of the command.
 	 */
@@ -57,14 +50,6 @@ public abstract class AbstractCommand implements ICommand {
 	public Map<String, Object> getParameters()
 	{
 		return this.parameters;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setMongodExecutable(MongodExecutable mongodExecutable)
-	{
-		this.mongodExecutable = mongodExecutable;
 	}
 	
 	/**
