@@ -70,6 +70,7 @@ public class Response implements IResponse {
 			jsonObject.put(parameter, this.parameters.get(parameter));
 		
 		}
+
 		return jsonObject.toString();
 
 	}

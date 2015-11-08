@@ -7,8 +7,14 @@
 package com.gomoob.embedded;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,25 +115,28 @@ public class EmbeddedMongo {
 		System.out.println("MONGOD_PORT=" + context.getMongoContext().getNet().getPort());
 		System.out.println("SERVER_SOCKET_PORT=" + context.getSocketContext().getServerSocket().getLocalPort());
 
+		Socket socket = null;
+		BufferedReader reader = null;
+        Writer writer = null;
+		
 		while (!terminated) {
 
-			Socket socket = context.getSocketContext().getServerSocket().accept();
+			socket = context.getSocketContext().getServerSocket().accept();
 
-			InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
-			DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-			BufferedReader inputReader = new BufferedReader(inputStream);
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			writer = new OutputStreamWriter(new DataOutputStream(socket.getOutputStream()));
 
 			System.out.println("Waiting for command...");
-			String commandString = inputReader.readLine();
+			String commandString = reader.readLine();
 			System.out.println(commandString);
 
 			ICommand command = parseCommandString(commandString);
 
 			IResponse response = command.run(context);
 
-			// Sends a representation of the response
-			outputStream.writeBytes(response.toJSON());
-			outputStream.flush();
+			writer.write(response.toJSON());
+			
+			writer.close();
 
 			// If the current socket is opened close it
 			if (!socket.isClosed()) {

@@ -72,6 +72,8 @@ public class MongoContext implements IMongoContext {
 		IDownloadConfig downloadConfig = new DownloadConfigBuilder()
 				.defaultsForCommand(command).build();
 
+		// System.out.println(downloadConfig.getArtifactStorePath().asFile().getAbsolutePath());
+
 		ExtractedArtifactStoreBuilder artifactStoreBuilder = new ExtractedArtifactStoreBuilder();
 		artifactStoreBuilder.defaults(command);
 		artifactStoreBuilder.download(downloadConfig);

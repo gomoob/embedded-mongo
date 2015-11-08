@@ -76,3 +76,10 @@ The payload of this command is the following.
     "command" : "stop"
 }
 ```
+
+## Build commands
+
+## Release history
+
+### 1.0.0 (2015-11-08)
+ * First release.
